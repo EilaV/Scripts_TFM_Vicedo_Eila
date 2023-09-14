@@ -1,0 +1,15 @@
+library(psych)
+library(lm.beta) 
+
+# Subconjunt dades N2_Lat i P3_Lat segons les tasques NB y SH i MU
+
+d_N2_NB <- subset(d, Task == "NB", select = c(N2_Lat, MU, Age))
+d_N2_SH <- subset(d, Task == "SH", select = c(N2_Lat, MU, Age))
+d_P3_NB <- subset(d, Task == "NB", select = c(P3_Lat, MU, Age))
+d_P3_SH <- subset(d, Task == "SH", select = c(P3_Lat, MU, Age))
+
+# Subconjunt dades N2_Lat i P3_Lat segons les tasques NB y SH i SSTM
+d_N2_NB <- subset(d, Task == "NB", select = c(N2_Lat, SSTM, Age))
+d_N2_SH <- subset(d, Task == "SH", select = c(N2_Lat, SSTM, Age))
+d_P3_NB <- subset(d, Task == "NB", select = c(P3_Lat, SSTM, Age))
+d_P3_SH <- subset(d, Task == "SH", select = c(P3_Lat, SSTM, Age))
