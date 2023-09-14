@@ -9,8 +9,90 @@ d_P3_NB <- subset(d, Task == "NB", select = c(P3_Lat, MU, Age))
 d_P3_SH <- subset(d, Task == "SH", select = c(P3_Lat, MU, Age))
 
 
-
 #Models de regressió additius (N200, P300) MU:
+
+m1 <- lm(N2_Lat ~ MU + Age, data = d_N2_NB)
+summary(m1)
+
+library(lm.beta)
+lm.beta(m1)
+
+m2 <- lm(N2_Lat ~ MU + Age, data = d_N2_SH)
+summary(m2)
+
+library(lm.beta)
+lm.beta(m2)
+
+m3 <- lm(P3_Lat ~ MU + Age, data = d_P3_NB)
+summary(m3)
+
+library(lm.beta)
+lm.beta(m3)
+
+m4 <- lm(P3_Lat ~ MU + Age, data = d_P3_SH)
+summary(m4)
+
+library(lm.beta)
+lm.beta(m4)
+
+#Models de regressió multiplicatius
+
+m5<-lm(N2_Lat~MU*Age,data= d_N2_NB)
+summary(m5)
+
+lm.beta(m5)
+
+
+m6<-lm(N2_Lat~MU*Age,data= d_N2_SH)
+summary(m6)
+
+lm.beta(m6)
+
+#MODEL INTERACTIU DE P300
+m7<-lm(P3_Lat~MU*Age,data= d_P3_NB)
+summary(m7)
+
+lm.beta(m7)
+
+m8<-lm(P3_Lat~MU*Age,data= d_P3_SH)
+summary(m8)
+
+lm.beta(m8)
+
+#GRÀFICS D'INTERACCIÓ ADDITIUS
+#MU I SWITCHING
+library (calibrate)
+
+min_MU <- min(d_P3_SH$MU)
+max_MU <- max(d_P3_SH$MU)
+
+coefficients <- coef(m4)
+
+x <- seq(min_MU, max_MU, length.out = 100)
+y <- predict(m4, newdata = data.frame(MU = x, Age = median(d_P3_SH$Age)))
+
+plot(d_P3_SH$MU, fitted.values(m4), xlab = "MU", ylab = "P3_Lat", main = "Model additiu de MU i P3 per a Switching", type = "n")
+
+textxy(d_P3_SH$MU, fitted.values(m4), d_P3_SH$Age, cex = 0.8)
+
+lines(x, y, col = "red")
+
+
+
+# GRÀFICS D'INTERACCIÓ MULTIPLICATIUS
+
+# Definir valors mínim i màxim d'edat
+min_age <- min(d_P3_NB$Age)
+max_age <- max(d_P3_NB$Age)
+
+x <- seq(min_age, max_age, length.out = 100)
+y <- predict(m7, newdata = data.frame(Age = x, MU = median(d_P3_NB$MU)))
+
+plot(d_P3_NB$MU, fitted.values(m7), pch = "", xlab = "MT", ylab = "P3", col = colors())
+textxy(d_P3_NB$MU, fitted.values(m7), d_P3_NB$Age, cex = 0.8)
+
+
+lines(x, y, col = "red")
 
 
 
