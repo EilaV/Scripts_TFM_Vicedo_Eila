@@ -1,1 +1,18 @@
+#DETERMINAR DIRECTORI
+setwd("C:\\Users\\MSI\\OneDrive\\Escritorio\\UDL\\Màsters\\Neuropisco\\TFM\\Frischkorn et al\\CleanedData")
+
+#CARREGAR BASE DE DADES
+d<-read.table(file="ERP_latencies_long.csv", header=T, sep=",")
+
+#EXCLOURE N1 I P2
+d_s<- subset(d, select = -c(N1_Lat, P2_Lat))
+
+#SUBSET AMB SH i NB (Únicament per a BL) 
+d_s <- d_s[!(d_s$Task == "ANT" | d_s$Block %in% c("FL", "TP")), ]
+
+#ELIMINAR COLUMNA DE FLANKER
+d_s <- d_s[, -which(names(d_s) == "Flanker")]
+
+
+
 
