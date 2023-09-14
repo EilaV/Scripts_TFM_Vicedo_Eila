@@ -80,19 +80,45 @@ lines(x, y, col = "red")
 
 
 # GRÀFICS D'INTERACCIÓ MULTIPLICATIUS
-
-# Definir valors mínim i màxim d'edat
+#
+library (calibrate)
 min_age <- min(d_P3_NB$Age)
 max_age <- max(d_P3_NB$Age)
 
 x <- seq(min_age, max_age, length.out = 100)
 y <- predict(m7, newdata = data.frame(Age = x, MU = median(d_P3_NB$MU)))
 
-plot(d_P3_NB$MU, fitted.values(m7), pch = "", xlab = "MT", ylab = "P3", col = colors())
+plot(d_P3_NB$MU, fitted.values(m7), xlab = "MT", ylab = "P3",type = "n")
 textxy(d_P3_NB$MU, fitted.values(m7), d_P3_NB$Age, cex = 0.8)
 
-
 lines(x, y, col = "red")
+
+
+
+# 
+min_MU <- min(d_P3_SH$MU)
+max_MU <- max(d_P3_SH$MU)
+
+# Obteniu els coeficients del model m4 (assegureu-vos que m4 ja està ajustat)
+coefficients <- coef(m4)
+
+# Crea una seqüència de valors de MU per a les prediccions
+x <- seq(min_MU, max_MU, length.out = 100)
+
+# Fes prediccions utilitzant el model m4
+y <- predict(m4, newdata = data.frame(MU = x, Age = median(d_P3_SH$Age)))
+
+# Crea un gràfic de dispersió amb les dades observades sense punts
+plot(d_P3_SH$MU, fitted.values(m4), xlab = "MU", ylab = "P3_Lat", main = "Model additiu de MU i P3 per a Switching", type = "n")
+
+# Afegiu etiqüetes amb edat als punts
+textxy(d_P3_SH$MU, fitted.values(m4), d_P3_SH$Age, cex = 0.8)
+
+# Dibuixa la línia de regressió
+lines(x, y, col = "red")
+
+
+
 
 
 
