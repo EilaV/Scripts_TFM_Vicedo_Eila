@@ -1,4 +1,4 @@
-#DETERMINAR DIRECTORI
+#DETERMINAR DIRECTORI (cal introduïr la direcció en la que es troba la base de dades baixada del Frischkhorn) 
 setwd("C:\\Users\\MSI\\OneDrive\\Escritorio\\UDL\\Màsters\\Neuropisco\\TFM\\Frischkorn et al\\CleanedData")
 
 #CARREGAR BASE DE DADES
@@ -12,6 +12,34 @@ d_s <- d_s[!(d_s$Task == "ANT" | d_s$Block %in% c("FL", "TP")), ]
 
 #ELIMINAR COLUMNA DE FLANKER
 d_s <- d_s[, -which(names(d_s) == "Flanker")]
+
+#ELIMINAR TOTS ELS NA
+d_s <- d_s[complete.cases(d_s), ]
+
+#CARREGAR DADES AGE (Alter):
+d2<-read.table(file="DemographicData.csv", header=T, sep=",")
+
+d2<- subset(d2, select = c(Subject,Alter))
+
+#CARREGAR LES MESURES DE WMC
+
+d3<-read.table(file="WMC_CleanedData.csv", header=T, sep=",")
+
+#SELECCIONAR LES D'INTERÈS (MUpc i SSTM)
+d3$MUpc <- round(d3$MUpc, digits = 3)
+d3 <- d3[, c("Subject", "MUpc", "SSTM")]
+
+#COMBINAR BASES DE DADES (d_s=Latències, d2=Edat, d3=WMC)
+d_merged <- merge(d_s, d2, by = "Subject", all = TRUE)
+d_merged <- merge(d_merged, d3, by = "Subject", all = TRUE)
+d <- d_merged
+
+d <- d[complete.cases(d), ]
+
+colnames(d)[7]<-"Age"
+colnames(d)[8]<-"MU"
+
+
 
 
 
