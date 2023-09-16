@@ -39,8 +39,3 @@ d <- d[complete.cases(d), ]
 colnames(d)[7]<-"Age"
 colnames(d)[8]<-"MU"
 
-
-
-
-
-
