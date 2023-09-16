@@ -60,46 +60,90 @@ summary(m8)
 lm.beta(m8)
 
 #GRÀFICS D'INTERACCIÓ ADDITIUS
-#MU I SWITCHING
-library (calibrate)
 
-min_MU <- min(d_P3_SH$MU)
-max_MU <- max(d_P3_SH$MU)
 
-coefficients <- coef(m4)
+
+#EDAT I N-BACK
+
+par(mfrow=c(1,3))
+
+
+min_MU <- min(d_N2_NB$Age)
+max_MU <- max(d_N2_NB$Age)
+
+coeficients <- coef(m1)
+
 
 x <- seq(min_MU, max_MU, length.out = 100)
-y <- predict(m4, newdata = data.frame(MU = x, Age = median(d_P3_SH$Age)))
+y <- coeficients[1] + coeficients[2] * median(d_N2_NB$MU) + coeficients[3] * x
 
-plot(d_P3_SH$MU, fitted.values(m4), xlab = "MU", ylab = "P3_Lat", main = "Model additiu de MU i P3 per a Switching", type = "n")
-
-textxy(d_P3_SH$MU, fitted.values(m4), d_P3_SH$Age, cex = 0.8)
-
-lines(x, y, col = "red")
+plot(d_N2_NB$Age, fitted.values(m1), xlab = "Edat", ylab = "N2_Lat", main = "Model additiu Edat i N2 en N-back", pch = 19)
 
 
+lines(x, y, col = "red", lty=1)
 
-# GRÀFICS D'INTERACCIÓ MULTIPLICATIUS
-#
-library (calibrate)
+
+
+
+
 min_age <- min(d_P3_NB$Age)
 max_age <- max(d_P3_NB$Age)
 
+
+coeficients <- coef(m3) 
+
+
 x <- seq(min_age, max_age, length.out = 100)
-y <- predict(m7, newdata = data.frame(Age = x, MU = median(d_P3_NB$MU)))
-
-plot(d_P3_NB$MU, fitted.values(m7), xlab = "MT", ylab = "P3",type = "n")
-textxy(d_P3_NB$MU, fitted.values(m7), d_P3_NB$Age, cex = 0.8)
-
-lines(x, y, col = "red")
+y <- coeficients[1] + coeficients[2] * median(d_P3_NB$MU) + coeficients[3] * x
 
 
 
-# 
+plot(d_P3_NB$Age, fitted.values(m3), xlab = "Edat", ylab = "P3_Lat", cex.lab= 1.3, main = "Model additiu Edat i P3 en N-back", pch = 19 )
+
+
+
+lines(x, y, col = "red", lty=1)
+
+
+
+
+#EDAT I SWITCHING
+
+
+min_age <- min(d_P3_SH$Age)
+max_age <- max(d_P3_SH$Age)
+
+
+coeficients <- coef(m4) 
+
+
+x <- seq(min_age, max_age, length.out = 100)
+y <- coeficients[1] + coeficients[2] * median(d_P3_SH$MU) + coeficients[3] * x
+
+
+
+plot(d_P3_SH$Age, fitted.values(m4), xlab = "Edat", ylab = "P3_Lat", cex.lab= 1.3,main = "Model additiu Edat i P3 en Switching",pch = 19 )
+
+
+
+
+lines(x, y, col = "red", lty=1)
+
+
+
+
+
+
+
+
+#MU I SWITCHING
+
+library (calibrate)
+
+
 min_MU <- min(d_P3_SH$MU)
 max_MU <- max(d_P3_SH$MU)
 
-# Obteniu els coeficients del model m4 (assegureu-vos que m4 ja està ajustat)
 coefficients <- coef(m4)
 
 # Crea una seqüència de valors de MU per a les prediccions
@@ -120,6 +164,49 @@ lines(x, y, col = "red")
 
 
 
+# GRÀFICS D'INTERACCIÓ MULTIPLICATIUS
 
+par(mfrow=c(1,2))
+#PLOT INTERACTIU P300 EN NB
+
+min_MU<-min(d_P3_NB$MU)
+max_MU<-max(d_P3_NB$MU)
+
+
+
+coefficients <- coef(m7)
+
+x <- seq(min_MU, max_MU, length.out = 100)
+y <- predict(m7, newdata = data.frame(MU = x, Age = median(d_P3_NB$Age)))
+
+plot(d_P3_NB$MU, fitted.values(m7), main = "Gràfic d'interacció MT*Edat en les Latències de P300 per a la tasca N-back", cex.main= 0.8,pch = "", xlab = "MT", ylab = "P3", col = colors())
+textxy(d_P3_NB$MU, fitted.values(m7), d_P3_NB$Age, cex = 0.7)
+
+
+lines(x, y, col = "blue",lwd=1)
+
+#PLOT INTERACTIU P300 EN SH
+
+min_MU<-min(d_P3_SH$MU)
+max_MU<-max(d_P3_SH$MU)
+
+
+
+coefficients <- coef(m8)
+
+x <- seq(min_MU, max_MU, length.out = 100)
+y <- predict(m8, newdata = data.frame(MU = x, Age = median(d_P3_SH$Age)))
+
+plot(d_P3_SH$MU, fitted.values(m8), main = "Gràfic d'interacció MT*Edat en les Latències de P300 per a la tasca Switching", cex.main= 0.8, pch = "", xlab = "MT", ylab = "P3", col = colors())
+textxy(d_P3_SH$MU, fitted.values(m8), d_P3_SH$Age, cex = 0.7)
+
+
+lines(x, y, col = "red",lwd=1)
+
+
+anova(m1,m5)
+anova(m2,m6)
+anova(m3,m7)
+anova(m4,m8)
 
 
