@@ -1,0 +1,194 @@
+library(psych)
+
+library(lm.beta) 
+
+
+#Comprovació del nombre de subjectes
+length(unique(d$Subject))
+[1] 79
+
+#COPIA I ENGANXA TOT TAL QUAL :)
+
+# Crear els subconjunts de dades per a N2_Lat i P3_Lat segons les tasques NB y SH
+
+d1_N2_NB <- subset(d, Task == "NB", select = c(N2_Lat, SSTM, Age))
+d1_N2_SH <- subset(d, Task == "SH", select = c(N2_Lat, SSTM, Age))
+d1_P3_NB <- subset(d, Task == "NB", select = c(P3_Lat, SSTM, Age))
+d1_P3_SH <- subset(d, Task == "SH", select = c(P3_Lat, SSTM, Age))
+
+
+#Models de regressió additius (N200, P300)
+
+m1b <- lm(N2_Lat ~ SSTM + Age, data = d1_N2_NB)
+summary(m1b)
+
+
+library(lm.beta)
+lm.beta(m1b)
+
+
+
+m2b <- lm(N2_Lat ~ SSTM + Age, data = d1_N2_SH)
+summary(m2b)
+
+library(lm.beta)
+lm.beta(m2b)
+
+
+m3b <- lm(P3_Lat ~ SSTM + Age, data = d1_P3_NB)
+summary(m3b)
+
+
+library(lm.beta)
+lm.beta(m3b)
+
+
+m4b <- lm(P3_Lat ~ SSTM + Age, data = d1_P3_SH)
+summary(m4b)
+
+
+library(lm.beta)
+lm.beta(m4b)
+
+
+# GRÀFICS ADDITIUS EDAT 
+par(mfrow=c(1,3))
+
+min_SSTM <- min(d1_N2_NB$Age)
+max_SSTM <- max(d1_N2_NB$Age)
+
+coeficients <- coef(m1b)
+
+
+x <- seq(min_SSTM, max_SSTM, length.out = 100)
+y <- coeficients[1] + coeficients[2] * median(d1_N2_NB$SSTM) + coeficients[3] * x
+
+plot(d1_N2_NB$Age, fitted.values(m1b), xlab = "Edat", ylab = "N2_Lat", cex.lab= 1.3,main = "Model additiu Edat i N2 en N-back", pch = 19)
+
+
+lines(x, y, col = "red", lty=1)
+
+
+
+
+
+min_age <- min(d1_P3_NB$Age)
+max_age <- max(d1_P3_NB$Age)
+
+
+coeficients <- coef(m3b) 
+
+
+x <- seq(min_age, max_age, length.out = 100)
+y <- coeficients[1] + coeficients[2] * median(d1_P3_NB$SSTM) + coeficients[3] * x
+
+
+
+plot(d1_P3_NB$Age, fitted.values(m3b), xlab = "Edat", ylab = "P3_Lat", cex.lab= 1.3,main = "Model additiu Edat i P3 en N-back", pch = 19 )
+
+
+
+lines(x, y, col = "red", lty=1)
+
+
+
+
+
+min_age <- min(d1_P3_SH$Age)
+max_age <- max(d1_P3_SH$Age)
+
+
+coeficients <- coef(m4b) 
+
+
+x <- seq(min_age, max_age, length.out = 100)
+y <- coeficients[1] + coeficients[2] * median(d1_P3_SH$SSTM) + coeficients[3] * x
+
+
+
+plot(d1_P3_SH$Age, fitted.values(m4b), xlab = "Edat", ylab = "P3_Lat", cex.lab= 1.3,main = "Model additiu Edat i P3 en Switching",pch = 19 )
+
+
+
+lines(x, y, col = "red", lty=1)
+
+
+
+
+
+
+
+# GRÀFIC MODEL 4
+
+par(mfrow=c(1,2))
+
+library (calibrate)
+
+# Obteniu els valors mínims i màxims de SSTM
+min_SSTM <- min(d1_P3_SH$SSTM)
+max_SSTM <- max(d1_P3_SH$SSTM)
+
+# Obteniu els coeficients del model m4 (assegureu-vos que m4 ja està ajustat)
+coefficients <- coef(m4b)
+
+# Crea una seqüència de valors de SSTM per a les prediccions
+x <- seq(min_SSTM, max_SSTM, length.out = 100)
+
+# Fes prediccions utilitzant el model m4
+y <- predict(m4b, newdata = data.frame(SSTM = x, Age = median(d1_P3_SH$Age)))
+
+# Crea un gràfic de dispersió amb les dades observades sense punts
+plot(d1_P3_SH$SSTM, fitted.values(m4b), xlab = "SSTM", ylab = "P3_Lat", main = "Model additiu de SSTM i P3 per a Switching", type = "n")
+
+# Afegiu etiqüetes amb edat als punts
+textxy(d1_P3_SH$SSTM, fitted.values(m4b), d1_P3_SH$Age, cex = 0.8)
+
+# Dibuixa la línia de regressió
+lines(x, y, col = "red")
+
+
+
+#MODELS MULTIPLICATIUS
+
+
+m5b<-lm(N2_Lat~SSTM*Age,data= d1_N2_NB)
+summary(m5b)
+
+lm.beta(m5b)
+
+
+m6b<-lm(N2_Lat~SSTM*Age,data= d1_N2_SH)
+summary(m6b)
+
+lm.beta(m6b)
+
+#MODEL INTERACTIU DE P300
+m7b<-lm(P3_Lat~SSTM*Age,data= d1_P3_NB)
+summary(m7b)
+
+lm.beta(m7b)
+
+m8b<-lm(P3_Lat~SSTM*Age,data= d1_P3_SH)
+summary(m8b)
+
+lm.beta(m8b)
+
+
+
+
+anova(m1b,m5b)
+anova(m2b,m6b)
+anova(m3b,m7b)
+anova(m4b,m8b)
+
+
+
+
+
+
+
+
+
+
+
+
